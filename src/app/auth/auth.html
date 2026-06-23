@@ -1,0 +1,50 @@
+<div class="page" id="page-auth">
+  <div class="auth-box">
+    <div class="auth-logo"><div class="auth-logo-dot"></div>Open To Test</div>
+    <div class="auth-sub">Plug in and start testing.</div>
+    <div class="auth-tabs">
+      <div class="auth-tab" [class.active]="currentTab === 'Login'" id="tab-li" (click)="onLoginButtonClick()">Log in</div>
+      <div class="auth-tab" [class.active]="currentTab === 'Register'" id="tab-reg" (click)="onRegisterButtonClick()">Register</div>
+    </div>
+    @if(currentTab == 'Login')
+    {
+      <div id="frm-login" class="form-stack" ngIf="currentTab === 'login'">
+        <div class="auth-err" id="li-err">Incorrect username or password.</div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" id="li-usr" placeholder="your username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="li-pw" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-full" (click)="onTryDoLogin()"><i class="ti ti-login"></i> Log in</button>
+        <p style="text-align:center;font-size:13px;color:var(--mut)">No account? <span style="color:var(--acc);cursor:pointer" (click)="onRegisterButtonClick()">Register</span></p>
+      </div>
+    }
+    @else
+    {
+      <div id="frm-reg" class="form-stack" ngIf="currentTab === 'register'">
+        <div class="auth-err" id="reg-err"></div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" id="reg-usr" placeholder="pick a username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="reg-pw" placeholder="min 6 characters">
+        </div>
+        <button class="btn btn-primary btn-full" (click)="onTryDoRegister()"><i class="ti ti-user-plus"></i> Create account</button>
+        <p style="text-align:center;font-size:13px;color:var(--mut)">Already registered? <span style="color:var(--acc);cursor:pointer" (click)="onLoginButtonClick()">Log in</span></p>
+      </div>
+    }
+
+    <div class="divider"></div>
+    <button class="btn btn-ghost btn-full btn-sm" (click)="onHomeButtonClick()"><i class="ti ti-arrow-left"></i> Back to home</button>
+    <div class="demo-hint">Demo: <b>PixelForge</b> or <b>NovaByte</b> · password: <b>test</b></div>
+  </div>
+</div>

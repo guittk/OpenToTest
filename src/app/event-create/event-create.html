@@ -1,0 +1,92 @@
+<div class="page" id="page-create">
+  <nav class="nav">
+    <a class="logo" onclick="go('catalog')" href="#">
+      <div class="logo-signal"></div>Open To Test
+    </a>
+    <button class="btn btn-ghost btn-sm" onclick="go('catalog')"><i class="ti ti-arrow-left"></i> Back</button>
+  </nav>
+  <div class="wrap create-body">
+    <div class="create-hd">
+      <h1>New Playtest Session</h1>
+      <p>Fill in the details so players know exactly what to expect.</p>
+    </div>
+    <div class="create-card">
+      <div class="fsec">
+        <div class="fsec-title">01 · Identity</div>
+        <div class="form-stack">
+          <div class="form-group">
+            <label class="form-label">Session title <span style="color:var(--red)">*</span></label>
+            <input class="form-input" id="c-title" placeholder="e.g. Combat System Alpha Test">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description <span style="color:var(--red)">*</span></label>
+            <textarea class="form-textarea" id="c-desc" placeholder="What are you testing? What should players pay attention to?"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">02 · Schedule</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date <span style="color:var(--red)">*</span></label>
+            <input class="form-input" type="date" id="c-date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Start time <span style="color:var(--red)">*</span></label>
+            <input class="form-input" type="time" id="c-time">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Duration (minutes) <span style="color:var(--red)">*</span></label>
+            <input class="form-input" type="number" id="c-dur" placeholder="60" min="15" max="480">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Open slots <span style="color:var(--red)">*</span></label>
+            <input class="form-input" type="number" id="c-slots" placeholder="8" min="1" max="100">
+          </div>
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title">03 · Configuration</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Test type <span style="color:var(--red)">*</span></label>
+            <select class="form-select" id="c-type">
+              <option value="">Select type…</option>
+              <option value="Combat">Combat</option>
+              <option value="Matchmaking">Matchmaking</option>
+              <option value="Balancing">Balancing</option>
+              <option value="UI/UX">UI/UX</option>
+              <option value="Performance">Performance</option>
+              <option value="Narrative">Narrative</option>
+              <option value="Tutorial">Tutorial</option>
+              <option value="Economy">Economy</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Game version <span style="color:var(--red)">*</span></label>
+            <input class="form-input" id="c-ver" placeholder="0.7.2-alpha" style="font-family:var(--fm)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Platform <span style="color:var(--red)">*</span></label>
+            <select class="form-select" id="c-plat">
+              <option value="">Select platform…</option>
+              <option value="PC">PC</option>
+              <option value="Mobile">Mobile</option>
+              <option value="VR">VR</option>
+              <option value="Console">Console</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Access link <span style="color:var(--red)">*</span> <span style="color:var(--mut);font-weight:400;text-transform:none;font-size:11px">(unlocks at session time)</span></label>
+            <input class="form-input" id="c-link" placeholder="https://itch.io/…">
+          </div>
+        </div>
+      </div>
+      <div class="auth-err" id="c-err" style="margin-bottom:16px">Please fill in all required fields.</div>
+      <div class="form-actions">
+        <button class="btn btn-primary btn-lg" onclick="doCreate()"><i class="ti ti-rocket"></i> Create playtest</button>
+        <button class="btn btn-ghost btn-lg" onclick="go('catalog')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
