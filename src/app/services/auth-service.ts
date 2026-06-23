@@ -28,8 +28,7 @@ export class AuthService
     const allUsers = this.getAllUsers();
     allUsers.push(newUser);
 
-    localStorage.setItem(this.USERSKEY, JSON.stringify(allUsers));
-
+    this.saveStorage(allUsers);
     this.saveLoggedUser(newUser);
     return true;
   }
@@ -50,12 +49,7 @@ export class AuthService
 
   getAllUsers(): User[]
   {
-    return JSON.parse(localStorage.getItem(this.USERSKEY) || '[]');
-  }
-
-  logout()
-  {
-    localStorage.removeItem(this.LOGGEDUSERKEY);
+    return this.loadStorage();
   }
 
   findUser(username: string)
@@ -65,14 +59,42 @@ export class AuthService
     return user;
   }
 
+  isLogged()
+  {
+    return this.getLoggedUser() != null;
+  }
+
+  getLoggedUser() : User | null
+  {
+    return this.loadLoggedUser();
+  }
+
+//#region Local Storage
+
+  loadLoggedUser()
+  {
+    return JSON.parse(localStorage.getItem(this.LOGGEDUSERKEY) || 'null');
+  }
+
   saveLoggedUser(user: User)
   {
     localStorage.setItem(this.LOGGEDUSERKEY, JSON.stringify(user))
   }
 
-  isLogged()
+  logout()
   {
-    const loggedUser = JSON.parse(localStorage.getItem(this.LOGGEDUSERKEY) || 'null');
-    return loggedUser != null;
+    localStorage.removeItem(this.LOGGEDUSERKEY);
   }
+
+  saveStorage(allUsers: User[])
+  {
+    localStorage.setItem(this.USERSKEY, JSON.stringify(allUsers));
+  }
+
+  loadStorage()
+  {
+    return JSON.parse(localStorage.getItem(this.USERSKEY) || '[]');
+  }
+  
+  //#endregion
 }

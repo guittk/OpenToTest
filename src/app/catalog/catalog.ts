@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DeveloperEvent } from '../models/developer-event.model';
 import { DeveloperEventService } from '../services/developer-event-service';
+import { AuthService } from '../services/auth-service';
 
 @Component({
   selector: 'app-catalog',
@@ -11,22 +12,15 @@ import { DeveloperEventService } from '../services/developer-event-service';
 
 export class Catalog
 {
-  developerEvents: DeveloperEvent[] = [];
-  
-    constructor(private eventService: DeveloperEventService) {}
-  
-    ngOnInit(): void
-    {
-      this.eventService.getEvents().subscribe(events => {
-        this.developerEvents = events;
-      });
-    }
-  
-    getFilteredEvents(searchText: string): DeveloperEvent[]
-    {
-      return this.developerEvents.filter(e =>
-        e.title.includes(searchText) ||
-        e.description.includes(searchText)
-      );
-    }
+  myEvents: DeveloperEvent[] = [];
+  otherEvents: DeveloperEvent[] = [];
+
+  constructor(private developerEventService: DeveloperEventService, private authService: AuthService)
+  {
+    const myUser = this.authService.getLoggedUser();
+    if (!myUser) return;
+
+    this.myEvents = this.developerEventService.getMyEvents(myUser.username);
+    this.otherEvents = this.developerEventService.getOtherEvents(myUser.username);
+  }
 }

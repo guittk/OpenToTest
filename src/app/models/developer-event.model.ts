@@ -1,4 +1,5 @@
-export interface DeveloperEvent {
+export interface DeveloperEvent
+{
   id: number;
   title: string;
   description: string;
