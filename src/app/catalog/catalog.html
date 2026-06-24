@@ -1,9 +1,114 @@
 <div class="page" id="page-catalog">
+
   <nav class="nav">
-    <a class="logo" onclick="go('catalog')" href="#">
+    <a class="logo" (click)="onHomeButtonClick()">
       <div class="logo-signal"></div>Open To Test
     </a>
-    <div class="nav-user" id="nav-user">aaaaaaaa</div>
+    <div class="nav-user"></div>
   </nav>
-  <div class="wrap catalog-body" id="cat-body">bbbbbb</div>
+
+  <div class="wrap catalog-body">
+
+    <div class="catalog-top">
+      <div>
+        <h1>Playtest Catalog</h1>
+        <p>Find sessions to join or launch your own.</p>
+      </div>
+      <button class="btn btn-primary" (click)="onCreateEventButtonClick()">
+        <i class="ti ti-plus"></i> New playtest
+      </button>
+          {{selectedCategory}}
+    {{searchText}}
+    </div>
+
+    @if (myEvents.length > 0)
+    {
+      <section style="margin-bottom: 40px">
+        <div class="section-line">Your Sessions</div>
+        <div class="events-grid">
+
+          @for (event of myEvents; track $index)
+          {
+            <div class="card ecard" (click)="onEventButtonClick(event)">
+
+              <div class="ec-head">
+                <div>
+                  <div class="ec-title">{{ event.title }}</div>
+                  <div class="ec-by">by {{ event.creatorUsername }}</div>
+                </div>
+                <span class="badge bc-matchmaking">
+                  {{ event.category }}
+                </span>
+              </div>
+
+              <p class="ec-desc">{{ event.description }}</p>
+
+              <div class="ec-meta">
+                <span><i class="ti ti-calendar"></i>{{ event.dateTime | date:'MMM d, y' }}</span>
+                <span><i class="ti ti-clock"></i>{{ event.dateTime | date:'HH:mm' }}</span>
+                <span><i class="ti ti-users"></i>{{ event.maxSlots }} slots</span>
+              </div>
+
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <section>
+      <div class="section-line">Discover Playtests</div>
+
+      <div class="search-row">
+        <div class="search-wrap">
+          <i class="ti ti-search"></i>
+          <input class="form-input" placeholder="Search sessions…" [(ngModel)]="searchText" (input)="onChangeFilter()"/>
+        </div>
+        <select class="form-select filter-sel" [(ngModel)]="selectedCategory" (change)="onChangeFilter()">
+          <option value="">All categories</option>
+          <option value="Combat">Combat</option>
+          <option value="Matchmaking">Matchmaking</option>
+          <option value="Balancing">Balancing</option>
+          <option value="UI/UX">UI/UX</option>
+          <option value="Performance">Performance</option>
+          <option value="Narrative">Narrative</option>
+          <option value="Tutorial">Tutorial</option>
+          <option value="Economy">Economy</option>
+        </select>
+      </div>
+
+      <div class="events-grid">
+        @for (event of otherEvents; track $index)
+        {
+          <div class="card ecard" (click)="onEventButtonClick(event)">
+
+            <div class="ec-head">
+              <div>
+                <div class="ec-title">{{ event.title }}</div>
+                <div class="ec-by">by {{ event.creatorUsername }}</div>
+              </div>
+                <span class="badge bc-matchmaking">{{ event.category }}</span>
+            </div>
+
+            <p class="ec-desc">{{ event.description }}</p>
+
+            <div class="ec-meta">
+              <span><i class="ti ti-calendar"></i>{{ event.dateTime | date:'MMM d, y' }}</span>
+              <span><i class="ti ti-clock"></i>{{ event.dateTime | date:'HH:mm' }}</span>
+              <span><i class="ti ti-users"></i>{{ event.maxSlots }} slots</span>
+            </div>
+
+          </div>
+        }
+        @empty
+        {
+          <div class="empty">
+            <i class="ti ti-telescope"></i>
+            <h3>No sessions found</h3>
+            <p>Try a different search or filter.</p>
+          </div>
+        }
+      </div>
+    </section>
+
+  </div>
 </div>

@@ -1,6 +1,5 @@
 import { DeveloperEvent } from '../models/developer-event.model';
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -13,13 +12,13 @@ export class DeveloperEventService
   getMyEvents(myUsername: string) : DeveloperEvent[]
   {
     const allEvents = this.getAllEvents();
-    return allEvents.filter(e => e.organizerId === myUsername);
+    return allEvents.filter(e => e.creatorUsername === myUsername);
   }
 
    getOtherEvents(myUsername: string) : DeveloperEvent[]
   {
     const allEvents = this.getAllEvents();
-    return allEvents.filter(e => e.organizerId !== myUsername);
+    return allEvents.filter(e => e.creatorUsername !== myUsername);
   }
   
   getAllEvents() : DeveloperEvent[]
@@ -29,10 +28,11 @@ export class DeveloperEventService
 
   createEvent(newEvent: DeveloperEvent)
   {
-    const event = this.findEvent(newEvent.title);
+    const event = this.findEventByTitle(newEvent.title);
 
     if(event)
     {
+      console.log("Evento já existe!");
       return false;
     }
 
@@ -43,16 +43,22 @@ export class DeveloperEventService
     return true;
   }
 
-  findEvent(title: string)
+  findEventByTitle(title: string)
   {
     const allEvents = this.getAllEvents();
     return allEvents.find(e => e.title == title) ?? null;
   }
 
+  findEventById(id: string)
+  {
+    const allEvents = this.getAllEvents();
+    return allEvents.find(e => e.id == id) ?? null;
+  }
+
   deleteEvent(title: string)
   {
     const allEvents = this.getAllEvents();
-    const foundEvent = this.findEvent(title);
+    const foundEvent = this.findEventByTitle(title);
 
     if(!foundEvent)
     {

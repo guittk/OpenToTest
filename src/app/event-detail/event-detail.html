@@ -1,9 +1,110 @@
 <div class="page" id="page-event">
+
   <nav class="nav">
-    <a class="logo" onclick="go('catalog')" href="#">
+    <a class="logo" (click)="onHomeButtonClick()">
       <div class="logo-signal"></div>Open To Test
     </a>
-    <button class="btn btn-ghost btn-sm" onclick="go('catalog')"><i class="ti ti-arrow-left"></i> Catalog</button>
+    <button class="btn btn-ghost btn-sm" (click)="onCatalogButtonClick()">
+      <i class="ti ti-arrow-left"></i> Catalog
+    </button>
   </nav>
-  <div class="wrap event-body" id="ev-body"></div>
+
+  <div class="wrap event-body">
+
+    <!-- Cabeçalho do evento -->
+    <div class="ed-header">
+      <div class="ed-meta">
+        <span class="badge">{{ developerEvent.category }}</span>
+        <span style="font-size: 13px; color: var(--mut)">by {{ developerEvent.creatorUsername }}</span>
+      </div>
+      <h1 class="ed-title">{{ developerEvent.title }}</h1>
+      <p class="ed-desc">{{ developerEvent.description }}</p>
+    </div>
+
+    <!-- Layout principal -->
+    <div class="ed-layout">
+
+      <!-- Coluna esquerda -->
+      <div>
+
+        <!-- Detalhes da sessão -->
+        <div class="det-card">
+          <h3><i class="ti ti-info-circle"></i> Session details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Date</label>
+              <span>{{ developerEvent.dateTime | date:'MMM d, y' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Start time</label>
+              <span>{{ developerEvent.dateTime | date:'HH:mm' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Category</label>
+              <span>
+                <span class="badge">{{ developerEvent.category }}</span>
+              </span>
+            </div>
+            <div class="info-item">
+              <label>Open slots</label>
+              <span>{{ developerEvent.maxSlots }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Participantes -->
+        <!-- <div class="det-card">
+          <h3><i class="ti ti-users"></i> Participants ({{ developerEvent.participants.length }}/{{ developerEvent.maxSlots }})</h3>
+          <div class="slots-bar" style="margin-bottom: 12px">
+            <div class="slots-fill"></div>
+          </div>
+          <div class="pax-list">
+            @for (participant of developerEvent.participants; track $index) {
+              <div class="pax">
+                <div class="pax-av">{{ participant.username.charAt(0).toUpperCase() }}</div>
+                <span class="pax-name">{{ participant.username }}</span>
+              </div>
+            } @empty {
+              <p style="font-size: 13px; color: var(--mut)">No participants yet.</p>
+            }
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Coluna direita — action card -->
+      <div>
+        <div class="action-card">
+
+          <!-- Barra de slots -->
+          <div style="margin-bottom: 16px">
+            <div class="slots-bar">
+              <div class="slots-fill"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; font-family: var(--fm)">
+              <span style="color: var(--mut)">Slots</span>
+              <!-- <span><b style="color: var(--txt)">{{ developerEvent.participants.length }}</b> / {{ developerEvent.maxSlots }}</span> -->
+            </div>
+          </div>
+
+          <!-- Resumo rápido -->
+          <div class="form-stack" style="gap: 8px; margin-bottom: 18px">
+            <div style="display: flex; justify-content: space-between; font-size: 13px">
+              <span style="color: var(--mut)">Date</span>
+              <span>{{ developerEvent.dateTime | date:'MMM d, y' }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px">
+              <span style="color: var(--mut)">Time</span>
+              <span>{{ developerEvent.dateTime | date:'HH:mm' }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px">
+              <span style="color: var(--mut)">Category</span>
+              <span>{{ developerEvent.category }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

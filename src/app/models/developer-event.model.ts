@@ -1,15 +1,18 @@
 export interface DeveloperEvent
 {
-  id: number;
+  id: string;
+  creatorUsername: string;
+
   title: string;
   description: string;
   dateTime: Date;
-  location: string;
   category: string;
   maxSlots: number;
-  image?: string;
 
-  status: 'future' | 'ongoing' | 'finished';
+  participants: Participant[];
+}
 
-  organizerId: string;
+export interface Participant
+{
+  username: string;
 }
