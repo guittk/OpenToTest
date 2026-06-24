@@ -1,5 +1,6 @@
 import { DeveloperEvent } from '../models/developer-event.model';
 import { Injectable } from '@angular/core';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,14 +12,12 @@ export class DeveloperEventService
 
   getMyEvents(myUsername: string) : DeveloperEvent[]
   {
-    const allEvents = this.getAllEvents();
-    return allEvents.filter(e => e.creatorUsername === myUsername);
+    return this.getAllEvents().filter(e => e.creatorUsername === myUsername);
   }
 
    getOtherEvents(myUsername: string) : DeveloperEvent[]
   {
-    const allEvents = this.getAllEvents();
-    return allEvents.filter(e => e.creatorUsername !== myUsername);
+    return this.getAllEvents().filter(e => e.creatorUsername !== myUsername);
   }
   
   getAllEvents() : DeveloperEvent[]
@@ -45,32 +44,44 @@ export class DeveloperEventService
 
   findEventByTitle(title: string)
   {
-    const allEvents = this.getAllEvents();
-    return allEvents.find(e => e.title == title) ?? null;
+    return this.getAllEvents().find(e => e.title == title) ?? null;
   }
 
   findEventById(id: string)
   {
-    const allEvents = this.getAllEvents();
-    return allEvents.find(e => e.id == id) ?? null;
+    return this.getAllEvents().find(e => e.id == id) ?? null;
   }
 
-  deleteEvent(title: string)
+  addParticipant(user: User, event: DeveloperEvent)
+  {
+    event.participants.push(user);
+
+    this.updateEvent(event);
+    return true;
+  }
+
+  removeParticipant(userId: string, event: DeveloperEvent)
+  {
+    event.participants = event.participants.filter(p => p.id !== userId);
+
+    this.updateEvent(event);
+    return true;
+  }
+
+  updateEvent(event: DeveloperEvent)
   {
     const allEvents = this.getAllEvents();
-    const foundEvent = this.findEventByTitle(title);
+    const newEvents = allEvents.filter(e => e.id !== event.id);
+    newEvents.push(event);
 
-    if(!foundEvent)
-    {
-      return false;
-    }
-    
-    const newEvents = allEvents.filter(e => e.title !== title);
+    this.saveStorage(newEvents);
+    return true;
+  }
 
-    if (newEvents.length === allEvents.length)
-    {
-      return false;
-    }
+  deleteEvent(eventId: string)
+  {
+    const allEvents = this.getAllEvents();
+    const newEvents = allEvents.filter(e => e.id !== eventId);
 
     this.saveStorage(newEvents);
     return true;
@@ -84,6 +95,11 @@ export class DeveloperEventService
   loadStorage()
   {
     return JSON.parse(localStorage.getItem(this.EVENTSKEY) || '[]');
+  }
+
+  isJoining(userId: string) : boolean
+  {
+    return this.getAllEvents().find(x => x.participants.find(y => y.id === userId)) != null;
   }
 }
 

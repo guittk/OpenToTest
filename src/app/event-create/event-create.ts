@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { DeveloperEventService } from '../services/developer-event-service';
 import { DeveloperEvent } from '../models/developer-event.model';
 import { AuthService } from '../services/auth-service';
-import { DeveloperEventService } from '../services/developer-event-service';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-create',

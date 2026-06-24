@@ -55,6 +55,40 @@
       </section>
     }
 
+    @if (myJoinedEvents.length > 0)
+    {
+      <section style="margin-bottom: 40px">
+        <div class="section-line">My Joined Sessions</div>
+        <div class="events-grid">
+
+          @for (event of myJoinedEvents; track $index)
+          {
+            <div class="card ecard" (click)="onEventButtonClick(event)">
+
+              <div class="ec-head">
+                <div>
+                  <div class="ec-title">{{ event.title }}</div>
+                  <div class="ec-by">by {{ event.creatorUsername }}</div>
+                </div>
+                <span class="badge bc-matchmaking">
+                  {{ event.category }}
+                </span>
+              </div>
+
+              <p class="ec-desc">{{ event.description }}</p>
+
+              <div class="ec-meta">
+                <span><i class="ti ti-calendar"></i>{{ event.dateTime | date:'MMM d, y' }}</span>
+                <span><i class="ti ti-clock"></i>{{ event.dateTime | date:'HH:mm' }}</span>
+                <span><i class="ti ti-users"></i>{{ event.maxSlots }} slots</span>
+              </div>
+
+            </div>
+          }
+        </div>
+      </section>
+    }
+
     <section>
       <div class="section-line">Discover Playtests</div>
 

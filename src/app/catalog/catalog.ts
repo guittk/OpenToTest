@@ -1,11 +1,11 @@
 import { DeveloperEventService } from '../services/developer-event-service';
 import { DeveloperEvent } from '../models/developer-event.model';
 import { AuthService } from '../services/auth-service';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../models/user.model';
+import { DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-catalog',
   imports: [DatePipe, FormsModule],
@@ -21,6 +21,7 @@ export class Catalog
 
   myEvents: DeveloperEvent[] = [];
   otherEvents: DeveloperEvent[] = [];
+  myJoinedEvents: DeveloperEvent[] = [];
 
   constructor(private developerEventService: DeveloperEventService, private authService: AuthService, private router: Router)
   {
@@ -56,8 +57,10 @@ export class Catalog
       return;
     }
 
-    this.myEvents = this.developerEventService.getMyEvents(this.loggedUser.username);
-    let otherEvents = this.developerEventService.getOtherEvents(this.loggedUser.username);
+    const loggedUser = this.loggedUser;
+
+    this.myEvents = this.developerEventService.getMyEvents(loggedUser.username);
+    let otherEvents = this.developerEventService.getOtherEvents(loggedUser.username);
 
     if(this.selectedCategory != '')
     {
@@ -70,5 +73,6 @@ export class Catalog
     }
 
     this.otherEvents = otherEvents;
+    this.myJoinedEvents = otherEvents.filter(e => e.participants.some(p => p.id === loggedUser.id));
   }
 }

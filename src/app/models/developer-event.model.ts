@@ -1,3 +1,5 @@
+import { User } from "./user.model";
+
 export interface DeveloperEvent
 {
   id: string;
@@ -9,10 +11,5 @@ export interface DeveloperEvent
   category: string;
   maxSlots: number;
 
-  participants: Participant[];
-}
-
-export interface Participant
-{
-  username: string;
+  participants: User[];
 }

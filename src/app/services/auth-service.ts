@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,13 @@ export class AuthService
       return true;
     }
 
-    const newUser: User = { username, email, password };  
+    const newUser: User =
+    {
+      id: crypto.randomUUID(),
+      username: username,
+      password: password,
+      email: email
+    };  
     const allUsers = this.getAllUsers();
     allUsers.push(newUser);
 
