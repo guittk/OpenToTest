@@ -231,3 +231,9 @@ body{font-family:var(--fb);background:var(--bg);color:var(--txt);min-height:100v
     grid-template-columns: 1fr;
   }
 }
+
+.owner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

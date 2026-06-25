@@ -3,7 +3,7 @@
     <a class="logo" (click)="onHomeButtonClick()">
       <div class="logo-signal"></div>Open To Test
     </a>
-    <button class="btn btn-ghost btn-sm" (click)="onCatalogButtonClick()"><i class="ti ti-arrow-left"></i> Back</button>
+    <button class="btn btn-ghost btn-sm" (click)="onBackButtonClick()"><i class="ti ti-arrow-left"></i> Back</button>
   </nav>
   <div class="wrap create-body">
     <div class="create-hd">
@@ -35,10 +35,6 @@
             <label class="form-label">Start time <span style="color:var(--red)">*</span></label>
             <input class="form-input" type="time" id="c-time">
           </div>
-          <!-- <div class="form-group">
-            <label class="form-label">Duration (minutes) <span style="color:var(--red)">*</span></label>
-            <input class="form-input" type="number" id="c-dur" placeholder="60" min="15" max="480">
-          </div> -->
           <div class="form-group">
             <label class="form-label">Open slots <span style="color:var(--red)">*</span></label>
             <input class="form-input" type="number" id="c-slots" placeholder="8" min="1" max="100">
@@ -62,30 +58,20 @@
               <option value="Economy">Economy</option>
             </select>
           </div>
-          <!-- <div class="form-group">
-            <label class="form-label">Game version <span style="color:var(--red)">*</span></label>
-            <input class="form-input" id="c-ver" placeholder="0.7.2-alpha" style="font-family:var(--fm)">
-          </div> -->
-          <!-- <div class="form-group">
-            <label class="form-label">Platform <span style="color:var(--red)">*</span></label>
-            <select class="form-select" id="c-plat">
-              <option value="">Select platform…</option>
-              <option value="PC">PC</option>
-              <option value="Mobile">Mobile</option>
-              <option value="VR">VR</option>
-              <option value="Console">Console</option>
-            </select>
-          </div> -->
-          <!-- <div class="form-group">
-            <label class="form-label">Access link <span style="color:var(--red)">*</span> <span style="color:var(--mut);font-weight:400;text-transform:none;font-size:11px">(unlocks at session time)</span></label>
-            <input class="form-input" id="c-link" placeholder="https://itch.io/…">
-          </div> -->
         </div>
       </div>
       <div class="auth-err" id="c-err" style="margin-bottom:16px">Please fill in all required fields.</div>
       <div class="form-actions">
-        <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Create playtest</button>
-        <button class="btn btn-ghost btn-lg" (click)="onCatalogButtonClick()">Cancel</button>
+        @if(queryEvent === null)
+        {
+          <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Create playtest</button>
+        }
+        @else
+        {
+          <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Save edit</button>
+        }
+
+        <button class="btn btn-ghost btn-lg" (click)="onBackButtonClick()">Cancel</button>
       </div>
     </div>
   </div>

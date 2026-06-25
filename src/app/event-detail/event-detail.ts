@@ -61,6 +61,11 @@ export class EventDetail
     this.router.navigate(['catalog']);
   }
 
+  onEditButtonClick()
+  {
+    this.router.navigate(['event/create'], { queryParams: { eventId: this.developerEvent.id } });
+  }
+
   onDeleteButtonClick()
   {
     const success = this.developerEventService.deleteEvent(this.developerEvent.id);
