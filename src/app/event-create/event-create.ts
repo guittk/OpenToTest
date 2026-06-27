@@ -1,5 +1,5 @@
+import { CreateEventRequest, DeveloperEvent } from '../models/developer-event.model';
 import { DeveloperEventService } from '../services/developer-event-service';
-import { DeveloperEvent } from '../models/developer-event.model';
 import { AuthService } from '../services/auth-service';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
@@ -20,7 +20,7 @@ export class EventCreate
   {
     this.activateRoute.queryParams.subscribe(params =>
     {
-      const myUser = authService.getLoggedUser();
+      const myUser = authService.getMyUser();
       console.log('myUser: ' + myUser?.username);
 
       if(!myUser)
@@ -31,6 +31,10 @@ export class EventCreate
       }
 
       const eventId = params['eventId'];
+      console.log("Deveria estar recebendo parametros");
+      console.log(params);
+      console.log(eventId);
+
 
       if(!eventId)
       {
@@ -38,26 +42,16 @@ export class EventCreate
         return;
       }
 
-      const developerEvent = developerEventService.findEventById(eventId);
-      console.log('developerEvent: ' + developerEvent?.creatorUsername);
-
-      if(!developerEvent)
+      const foundEvent = developerEventService.getLocalMyEventById(eventId);
+      
+      if(!foundEvent)
       {
-        console.log('Evento não encontrado');
+        console.log('Evento não encontrado ou não é meu');
         this.router.navigate(['catalog']);
         return;
       }
 
-      const isMyEvent = myUser.username == developerEvent.creatorUsername;
-      console.log('isMyEvent: ' + isMyEvent);
-      if(!isMyEvent)
-      {
-        console.log('Não é meu evento');
-        this.router.navigate(['catalog']);
-        return;
-      }
-
-      this.queryEvent = developerEvent;
+      this.queryEvent = foundEvent;
     });
   }
 
@@ -73,16 +67,16 @@ export class EventCreate
   addValuesToForms(developerEvent: DeveloperEvent)
   {
     this.setInputValue('c-title', developerEvent.title);
-      this.setInputValue('c-desc', developerEvent.description);
-      this.setInputValue('c-slots', String(developerEvent.maxSlots));
-      this.setInputValue('c-type', developerEvent.category);
-      
-      const date = new Date(developerEvent.dateTime);
-      this.setInputValue('c-date', date.toISOString().split('T')[0]);
+    this.setInputValue('c-desc', developerEvent.description);
+    this.setInputValue('c-slots', String(developerEvent.maxSlots));
+    this.setInputValue('c-type', developerEvent.category);
+    
+    const date = new Date(developerEvent.dateTime);
+    this.setInputValue('c-date', date.toISOString().split('T')[0]);
 
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      this.setInputValue('c-time', `${hours}:${minutes}`);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    this.setInputValue('c-time', `${hours}:${minutes}`);
   }
 
   onHomeButtonClick()
@@ -99,36 +93,72 @@ export class EventCreate
     const maxSlots = this.getInputValue('c-slots');
     const category = this.getInputValue('c-type');
 
-    const creatorUser = this.authService.getLoggedUser();
-    const creatorUsername = creatorUser ? creatorUser.username : 'Não encontrado';
-    
-    const newEvent: DeveloperEvent =
+    const myUser = this.authService.getMyUser();
+
+    if(!myUser)
     {
-      id: crypto.randomUUID(),
-      creatorUsername: creatorUsername,
+      console.log("Não estou logado");
+      return;
+    }
+
+    if(this.queryEvent)
+    {
+      const updateEvent = this.queryEvent;
+      updateEvent.title = title,
+      updateEvent.description = description,
+      updateEvent.dateTime = new Date(`${dateTime}T${startTime}`),
+      updateEvent.maxSlots = Number(maxSlots),
+      updateEvent.category = category,
+
+      this.updateEvent(updateEvent);
+      return;
+    }
+
+    const newEvent : CreateEventRequest =
+    {
       title: title,
       description: description,
       dateTime: new Date(`${dateTime}T${startTime}`),
-      category: category,
       maxSlots: Number(maxSlots),
-      participants: []
+      category: category
     };
 
-    const success = this.developerEventService.createEvent(newEvent);
+    this.createEvent(newEvent);
+  }
 
-    if(!success)
-    {
-      console.log("erro ao criar um novo evento")
-    }
+  createEvent(newEvent: CreateEventRequest)
+  {
+    this.developerEventService.createEvent(newEvent).subscribe({
+      next: (event) =>
+      {
+        this.router.navigate(['event/detail']);
+      },
+      error: (err) =>
+      {
+        console.log(`erro ao criar um novo evento: ${err.error.message}`);
+      }
+    });
+  }
 
-    this.router.navigate(['event/detail']);
+  updateEvent(newEvent: DeveloperEvent)
+  {
+    this.developerEventService.updateEvent(newEvent).subscribe({
+      next: (event) =>
+      {
+        this.router.navigate(['event/detail']);
+      },
+      error: (err) =>
+      {
+        console.log(`erro ao editar um novo evento: ${err.error.message}`);
+      }
+    });
   }
 
   onBackButtonClick()
   {
     if(this.queryEvent)
     {
-      this.router.navigate(['event/detail'], { queryParams: { eventId: this.queryEvent.id } });
+      this.router.navigate(['event/detail'], { queryParams: { eventId: this.queryEvent._id } });
     }
     else
     {

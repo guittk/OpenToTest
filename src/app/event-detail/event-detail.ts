@@ -20,11 +20,11 @@ export class EventDetail
   role: 'Owner' | 'User' = 'User';
   isJoining: boolean = true;
 
-  constructor(private route: ActivatedRoute, private developerEventService: DeveloperEventService, private router: Router, private authService: AuthService)
+  constructor(private activateRoute: ActivatedRoute, private developerEventService: DeveloperEventService, private router: Router, private authService: AuthService)
   {    
-    this.route.queryParams.subscribe(params =>
+    this.activateRoute.queryParams.subscribe(params =>
     {
-      this.myUser = authService.getLoggedUser();
+      this.myUser = authService.getMyUser();
 
       if(!this.myUser)
       {
@@ -33,7 +33,7 @@ export class EventDetail
       }
 
       const eventId = params['eventId'];
-      const developerEvent = developerEventService.findEventById(eventId);
+      const developerEvent = developerEventService.findLocalAnyEventById(eventId);
     
       if(!developerEvent)
       {
@@ -44,7 +44,7 @@ export class EventDetail
 
       this.developerEvent = developerEvent;
       
-      const isOwner = this.myUser.username === developerEvent.creatorUsername;
+      const isOwner = this.myUser._id === developerEvent.owner._id;
       this.role = isOwner ? 'Owner' : 'User';
 
       this.refreshIsJoining();
@@ -63,16 +63,43 @@ export class EventDetail
 
   onEditButtonClick()
   {
-    this.router.navigate(['event/create'], { queryParams: { eventId: this.developerEvent.id } });
+    if(!this.developerEvent)
+    {
+      console.log("O evento não está salvo");
+      return;
+    }
+
+    console.log("--------------------");
+    console.log(this.developerEvent);
+    console.log(this.developerEvent._id);
+    console.log("--------------------");
+
+    this.router.navigate(
+      ['event/create'],
+      {
+        queryParams: {
+          eventId: this.developerEvent._id
+        }
+      }
+    );
+
+    console.log("Estou enviando parametros");
+    this.router.navigate(['event/create'], { queryParams: { eventId: this.developerEvent._id } });
   }
 
   onDeleteButtonClick()
   {
-    const success = this.developerEventService.deleteEvent(this.developerEvent.id);
-
-    if(!success)return;
-
-    this.router.navigate(['catalog']);
+    this.developerEventService.deleteEvent(this.developerEvent._id).subscribe({
+      next: (event) =>
+      {
+        console.log(`Evento deletado com sucesso`);
+        this.router.navigate(['catalog']);
+      },
+      error: (err) =>
+      {
+        console.log(`Erro ao excluir evento: ${err.error.message}`);
+      }
+    });;
   }
 
   onJoinButtonClick()
@@ -81,9 +108,9 @@ export class EventDetail
 
     if(this.developerEvent.participants.length >= this.developerEvent.maxSlots) return;
 
-    if(this.developerEventService.isJoining(this.myUser.id)) return;
+    if(this.developerEventService.isLocalJoining(this.myUser._id)) return;
 
-    this.developerEventService.addParticipant(this.myUser, this.developerEvent);
+    this.developerEventService.addParticipant(this.developerEvent._id);
 
     this.refreshIsJoining();
   }
@@ -92,7 +119,7 @@ export class EventDetail
   {
     if(!this.myUser) return;
 
-    this.developerEventService.removeParticipant(this.myUser.id, this.developerEvent);
+    this.developerEventService.removeParticipant(this.developerEvent._id);
 
     this.refreshIsJoining();
   }
@@ -105,6 +132,6 @@ export class EventDetail
       return;
     }
 
-    this.isJoining = this.developerEventService.isJoining(this.myUser.id);
+    this.isJoining = this.developerEventService.isLocalJoining(this.myUser._id);
   }
 }

@@ -1,6 +1,8 @@
-import { DeveloperEvent } from '../models/developer-event.model';
-import { Injectable } from '@angular/core';
-import { User } from '../models/user.model';
+import { CreateEventRequest, DeveloperEvent } from '../models/developer-event.model';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { AuthService } from './auth-service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,128 +10,270 @@ import { User } from '../models/user.model';
 
 export class DeveloperEventService
 {
-  private EVENTSKEY: string = "EventsKey";
+  private port = "8080";
+  private http = inject(HttpClient);
+  private route = `http://localhost:${this.port}`;
 
-  getMyEvents(myUsername: string) : DeveloperEvent[]
+  private allEvents: DeveloperEvent[] = [];
+
+  constructor(private authService: AuthService)
   {
-    return this.getAllEvents().filter(e => e.creatorUsername === myUsername);
+    this.getAllEvents().subscribe();
   }
 
-   getOtherEvents(myUsername: string) : DeveloperEvent[]
+  // EVENTS //
+  getAllEvents(): Observable<DeveloperEvent[]>
   {
-    return this.getAllEvents().filter(e => e.creatorUsername !== myUsername);
-  }
-  
-  getAllEvents() : DeveloperEvent[]
-  {
-    return this.loadStorage();
+    return this.http.get<DeveloperEvent[]>(`${this.route}/events`).pipe(tap(allEvents => this.allEvents = allEvents));
   }
 
-  createEvent(newEvent: DeveloperEvent)
+  createEvent(event: CreateEventRequest): Observable<DeveloperEvent>
   {
-    const event = this.findEventByTitle(newEvent.title);
+    return this.http.post<DeveloperEvent>(`${this.route}/event`, event, this.getToken()).pipe(
+      tap(createdEvent =>
+      {
+        this.getAllEvents().subscribe();
+      })
+    );
+  }
 
-    if(event)
+  updateEvent(event: Partial<DeveloperEvent>): Observable<DeveloperEvent>
+  {
+    return this.http.patch<DeveloperEvent>(`${this.route}/event/${event._id}`, event, this.getToken()).pipe(
+      tap(updatedEvent =>
+      {
+        this.getAllEvents().subscribe();
+      })
+    );
+  }
+
+  deleteEvent(eventId: string): Observable<void>
+  {
+    return this.http.delete<void>(`${this.route}/event/${eventId}`, this.getToken()).pipe(
+      tap(() =>
+      {
+        this.getAllEvents().subscribe();
+      })
+    );
+  }
+
+  getToken()
+  {
+    const token =
     {
-      console.log("Evento já existe!");
-      return false;
+      headers:
+      {
+        Authorization: `Bearer ${this.authService.loadToken()}`
+      }
     }
 
-    const allEvents = this.getAllEvents();
-    allEvents.push(newEvent);
-
-    this.saveStorage(allEvents);
-    return true;
+    return token;
   }
 
-  findEventByTitle(title: string)
+  // LOCAL //
+  getLocalMyEventById(eventId: string): DeveloperEvent | null
   {
-    return this.getAllEvents().find(e => e.title == title) ?? null;
+    return this.allEvents.find(e => e._id === eventId) ?? null;
+  }
+  
+  getLocalMyEvents(): DeveloperEvent[]
+  {
+    const userId = this.authService.getMyUser()?._id;
+    return this.allEvents.filter(e => e.owner._id === userId);
+  }
+  
+  getLocalJoinedEvents(): DeveloperEvent[]
+  {
+    const userId = this.authService.getMyUser()?._id;
+    return this.allEvents.filter(e => e.participants.find(p => p._id === userId))
   }
 
-  findEventById(id: string)
+  getLocalOtherEvents(filterByName: string, filterByCategory: string): DeveloperEvent[]
   {
-    return this.getAllEvents().find(e => e.id == id) ?? null;
+    const userId = this.authService.getMyUser()?._id;
+    const otherEvents = this.allEvents.filter(e => e.owner._id !== userId);
+    let otherEventsFiltered = otherEvents;
+
+    const searchText = filterByName.trim().toLowerCase();
+
+    if(searchText !== '')
+    {
+      otherEventsFiltered = otherEventsFiltered.filter(e => e.title.toLowerCase().includes(searchText));
+    }
+
+    if(filterByCategory !== '')
+    {
+      otherEventsFiltered = otherEventsFiltered.filter(e => e.category === filterByCategory);
+    }
+
+    return otherEventsFiltered;
   }
 
-  addParticipant(user: User, event: DeveloperEvent)
+  findLocalAnyEventById(eventId: string)
   {
-    event.participants.push(user);
-
-    this.updateEvent(event);
-    return true;
+    return this.allEvents.find(e => e._id === eventId);
   }
 
-  removeParticipant(userId: string, event: DeveloperEvent)
+  isLocalJoining(userId: string) : boolean
   {
-    event.participants = event.participants.filter(p => p.id !== userId);
-
-    this.updateEvent(event);
-    return true;
+    return this.allEvents.find(x => x.participants.find(y => y._id === userId)) != null;
   }
 
-  updateEvent(event: DeveloperEvent)
+  addParticipant(eventId: string)
   {
-    const allEvents = this.getAllEvents();
-    const newEvents = allEvents.filter(e => e.id !== event.id);
-    newEvents.push(event);
+    const event = this.findLocalAnyEventById(eventId);
 
-    this.saveStorage(newEvents);
-    return true;
+    if(!event)
+    {
+      return;
+    }
+
+    const myUser = this.authService.getMyUser();
+
+    if(!myUser)
+    {
+      return;
+    }
+
+    event.participants.push(myUser);
+
+    this.updateEvent(event).subscribe({
+      next: (event) =>
+      {
+        console.log(`Participante adicionado com sucesso`);
+      },
+      error: (err) =>
+      {
+        console.log(`Erro ao adicionar participante: ${err.error.message}`);
+      }
+    });
   }
 
-  deleteEvent(eventId: string)
+  removeParticipant(eventId: string)
   {
-    const allEvents = this.getAllEvents();
-    const newEvents = allEvents.filter(e => e.id !== eventId);
+    const event = this.findLocalAnyEventById(eventId);
 
-    this.saveStorage(newEvents);
-    return true;
-  }
+    if(!event)
+    {
+      return;
+    }
 
-  saveStorage(allEvents: DeveloperEvent[])
-  {
-    localStorage.setItem(this.EVENTSKEY, JSON.stringify(allEvents));
-  }
+    const myUser = this.authService.getMyUser();
 
-  loadStorage()
-  {
-    return JSON.parse(localStorage.getItem(this.EVENTSKEY) || '[]');
-  }
+    if(!myUser)
+    {
+      return;
+    }
 
-  isJoining(userId: string) : boolean
-  {
-    return this.getAllEvents().find(x => x.participants.find(y => y.id === userId)) != null;
+    event.participants = event.participants.filter(p => p._id !== myUser._id);
+
+    this.updateEvent(event).subscribe({
+      next: (event) =>
+      {
+        console.log(`Participante adicionado com sucesso`);
+      },
+      error: (err) =>
+      {
+        console.log(`Erro ao adicionar participante: ${err.error.message}`);
+      }
+    });
   }
 }
 
-// export class DeveloperEventService
+
+// export class DeveloperEventService_BACKUP
 // {
-//   private http = inject(HttpClient);
-//   private base = 'http://localhost:3000/events';
+//   private EVENTSKEY: string = "EventsKey";
 
-//   getEvents(): Observable<DeveloperEvent[]>
+//   getMyEvents(myUsername: string) : DeveloperEvent[]
 //   {
-//     return this.http.get<DeveloperEvent[]>(this.base)
+//     return this.getAllEvents().filter(e => e.creatorUsername === myUsername);
 //   }
 
-//   createEvent(event: DeveloperEvent): Observable<DeveloperEvent>
+//   getOtherEvents(myUsername: string) : DeveloperEvent[]
 //   {
-//     return this.http.post<DeveloperEvent>(this.base, event);
+//     return this.getAllEvents().filter(e => e.creatorUsername !== myUsername);
+//   }
+  
+//   getAllEvents() : DeveloperEvent[]
+//   {
+//     return this.loadStorage();
 //   }
 
-//   findEvent(id: string): Observable<DeveloperEvent>
+//   createEvent(newEvent: DeveloperEvent)
 //   {
-//     return this.http.get<DeveloperEvent>(`${this.base}/${id}`);
+//     const event = this.findEventByTitle(newEvent.title);
+
+//     if(event)
+//     {
+//       console.log("Evento já existe!");
+//       return false;
+//     }
+
+//     const allEvents = this.getAllEvents();
+//     allEvents.push(newEvent);
+
+//     this.saveStorage(allEvents);
+//     return true;
 //   }
 
-//   updateEvent(id: string, event: Partial<DeveloperEvent>): Observable<DeveloperEvent>
+//   findEventByTitle(title: string)
 //   {
-//     return this.http.patch<DeveloperEvent>(`${this.base}/${id}`, event);
+//     return this.getAllEvents().find(e => e.title == title) ?? null;
 //   }
 
-//   deleteEvent(id: string)
+//   findEventById(id: string)
 //   {
-//     return this.http.delete(`${this.base}/${id}`);
+//     return this.getAllEvents().find(e => e.id == id) ?? null;
+//   }
+
+//   addParticipant(user: User, event: DeveloperEvent)
+//   {
+//     event.participants.push(user);
+
+//     this.updateEvent(event);
+//     return true;
+//   }
+
+//   removeParticipant(userId: string, event: DeveloperEvent)
+//   {
+//     event.participants = event.participants.filter(p => p.id !== userId);
+
+//     this.updateEvent(event);
+//     return true;
+//   }
+
+//   updateEvent(event: DeveloperEvent)
+//   {
+//     const allEvents = this.getAllEvents();
+//     const newEvents = allEvents.filter(e => e.id !== event.id);
+//     newEvents.push(event);
+
+//     this.saveStorage(newEvents);
+//     return true;
+//   }
+
+//   deleteEvent(eventId: string)
+//   {
+//     const allEvents = this.getAllEvents();
+//     const newEvents = allEvents.filter(e => e.id !== eventId);
+
+//     this.saveStorage(newEvents);
+//     return true;
+//   }
+
+//   saveStorage(allEvents: DeveloperEvent[])
+//   {
+//     localStorage.setItem(this.EVENTSKEY, JSON.stringify(allEvents));
+//   }
+
+//   loadStorage()
+//   {
+//     return JSON.parse(localStorage.getItem(this.EVENTSKEY) || '[]');
+//   }
+
+//   isJoining(userId: string) : boolean
+//   {
+//     return this.getAllEvents().find(x => x.participants.find(y => y.id === userId)) != null;
 //   }
 // }

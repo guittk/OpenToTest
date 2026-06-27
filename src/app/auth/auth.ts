@@ -51,16 +51,27 @@ export class Auth
   {    
     const username = this.getInputValue('li-usr');
     const password = this.getInputValue('li-pw');
-    const isSuccess = this.authService.login(username, password);
 
-    if(!isSuccess)
-    {
-      this.showMessage('li-err', true);
-      return;
-    }
+    this.sendLogin(username, password);
+  }
 
-    this.showMessage('li-err', false);
-    this.router.navigate(['/catalog']);  
+  sendLogin(username: string, password: string)
+  {
+    this.authService.login(username, password).subscribe({
+      next: (res) =>
+      {
+        console.log(`usuário ${res.user.username} logado com sucesso`);
+        console.log(`token: ${res.token}`);
+
+        this.showMessage('li-err', false);
+        this.router.navigate(['/catalog']);
+      },
+      error: (err) =>
+      {
+        console.log(`erro ao fazer login: ${err.error.message}`);
+        this.showMessage('li-err', true);
+      }
+    });
   }
 
   onTryDoRegister()
@@ -68,16 +79,19 @@ export class Auth
     const username = this.getInputValue('reg-usr');
     const email = this.getInputValue('reg-email');
     const password = this.getInputValue('reg-pw');
-    const isSuccess = this.authService.register(username, email, password);
 
-    if(!isSuccess)
-    {
-      this.showMessage('li-err', true);
-      return;
-    }
-
-    this.showMessage('li-err', false);
-    this.router.navigate(['/catalog']);  
+    this.authService.register(username, email, password).subscribe({
+      next: (res) =>
+      {
+        console.log(`usuário ${res.user.username} criado com sucesso`);
+        this.sendLogin(username, password);
+      },
+      error: (err) =>
+      {
+        console.log(`erro ao criar usuário: ${err.error.message}`);
+        this.showMessage('li-err', true);
+      }
+    }); 
   }
 
   getInputValue(id: string): string

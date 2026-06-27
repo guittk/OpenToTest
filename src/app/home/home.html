@@ -1,12 +1,13 @@
 <div class="page active" id="page-home">
   <nav class="nav">
-    <a class="logo" onclick="go('home')" href="#">
+    <a class="logo" href="#">
       <div class="logo-signal"></div>
       Open To Test
     </a>
     <div class="flex g3 items-c">
       @if(isLogged())
       {
+        <a>{{myUser?.username}}</a>
         <button class="btn btn-ghost btn-sm" (click)="onLogoutButtonClick()" >Logout</button>
       }
       @else

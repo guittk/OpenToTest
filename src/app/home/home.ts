@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth-service';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,14 @@ import { AuthService } from '../services/auth-service';
 
 export class Home
 {  
-  constructor(private router: Router, private authService: AuthService) { }
+  myUser: User | null = null;
+
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit()
+  {
+    this.myUser = this.authService.getMyUser();
+  }
 
   onLoginButtonClick()
   {

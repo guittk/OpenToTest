@@ -34,7 +34,7 @@
               <div class="ec-head">
                 <div>
                   <div class="ec-title">{{ event.title }}</div>
-                  <div class="ec-by">by {{ event.creatorUsername }}</div>
+                  <div class="ec-by">by {{ event.owner.username }}</div>
                 </div>
                 <span class="badge bc-matchmaking">
                   {{ event.category }}
@@ -68,7 +68,7 @@
               <div class="ec-head">
                 <div>
                   <div class="ec-title">{{ event.title }}</div>
-                  <div class="ec-by">by {{ event.creatorUsername }}</div>
+                  <div class="ec-by">by {{ event.owner.username }}</div>
                 </div>
                 <span class="badge bc-matchmaking">
                   {{ event.category }}
@@ -118,7 +118,7 @@
             <div class="ec-head">
               <div>
                 <div class="ec-title">{{ event.title }}</div>
-                <div class="ec-by">by {{ event.creatorUsername }}</div>
+                <div class="ec-by">by {{ event.owner.username }}</div>
               </div>
                 <span class="badge bc-matchmaking">{{ event.category }}</span>
             </div>
