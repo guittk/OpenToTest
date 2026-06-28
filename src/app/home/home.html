@@ -1,70 +1,71 @@
 <div class="page active" id="page-home">
+
+  <!-- NAV -->
   <nav class="nav">
     <a class="logo" href="#">
       <div class="logo-signal"></div>
       Open To Test
     </a>
     <div class="flex g3 items-c">
-      @if(isLogged())
-      {
-        <a>{{myUser?.username}}</a>
-        <button class="btn btn-ghost btn-sm" (click)="onLogoutButtonClick()" >Logout</button>
-      }
-      @else
-      {
-        <button class="btn btn-ghost btn-sm" (click)="onLoginButtonClick()" >Log in</button>
+      @if (isLogged()) {
+        <span style="font-size:13px;color:var(--mut);font-family:var(--fm)">{{ myUser?.username }}</span>
+        <button class="btn btn-ghost btn-sm" (click)="onLogoutButtonClick()">Logout</button>
+      } @else {
+        <button class="btn btn-ghost btn-sm" (click)="onLoginButtonClick()">Log in</button>
         <button class="btn btn-primary btn-sm" (click)="onRegisterButtonClick()">Register</button>
       }
     </div>
   </nav>
-  <div style="flex:1;display:flex;flex-direction:column">
-    <section class="hero">
+
+  <!-- BODY -->
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+
+    <section class="hero" style="padding:80px 24px 60px">
       <div class="hero-bg">
         <div class="bcast">
           <div class="bring"></div><div class="bring"></div>
           <div class="bring"></div><div class="bring"></div>
         </div>
       </div>
-      <div class="hero-pill"><div class="live-dot"></div>Playtest platform for game developers</div>
-      <h1 class="hero-h">Test early.<br><span>Launch confident.</span></h1>
-      <p class="hero-sub">Schedule live playtests, fill sessions with real players, and collect structured feedback — all in one place.</p>
+
+      <div class="hero-pill">
+        <div class="live-dot"></div>
+        Playtest platform for game developers
+      </div>
+
+      <h1 class="hero-h">
+        Test early.<br><span>Launch confident.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Schedule live playtests, fill sessions with real players, and collect
+        structured feedback — all in one place.
+      </p>
+
       <div class="hero-btns">
-        @if(isLogged())
-        {
-          <button class="btn btn-ghost btn-lg" (click)="onCatalogButtonClick()" >Abrir catálogo</button>
+        @if (isLogged()) {
+          <button class="btn btn-ghost btn-lg" (click)="onCatalogButtonClick()">
+            Abrir catálogo
+          </button>
+        } @else {
+          <button class="btn btn-primary btn-lg" (click)="onLoginButtonClick()">
+            Start playtesting <i class="ti ti-arrow-right"></i>
+          </button>
         }
-        @else
-        {
-          <button class="btn btn-primary btn-lg" (click)="onRegisterButtonClick()">Start playtesting <i class="ti ti-arrow-right"></i></button>
-          <button class="btn btn-ghost btn-lg" (click)="onLoginButtonClick()">Log in</button>
-        }
+      </div>
+
+      <!-- divider decorativo -->
+      <div style="margin-top:56px;display:flex;align-items:center;gap:20px;opacity:.35;position:relative;z-index:1;width:100%;max-width:480px">
+        <div style="flex:1;height:1px;background:var(--br)"></div>
+        <span style="font-size:11px;font-family:var(--fm);color:var(--mut);white-space:nowrap;letter-spacing:.08em">OPEN TO TEST · 2026</span>
+        <div style="flex:1;height:1px;background:var(--br)"></div>
       </div>
     </section>
-    <div class="wrap" style="flex:1">
-      <div class="feats">
-        <div class="feat">
-          <div class="feat-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
-          <div class="feat-title">Schedule with precision</div>
-          <div class="feat-desc">Set date, time, platform, and test type. Developers define exactly what they need so players come prepared — not guessing.</div>
-        </div>
-        <div class="feat">
-          <div class="feat-icon"><i class="ti ti-device-gamepad-2" aria-hidden="true"></i></div>
-          <div class="feat-title">Play with real testers</div>
-          <div class="feat-desc">Players browse open sessions and join with one click. The access link unlocks automatically at session time.</div>
-        </div>
-        <div class="feat">
-          <div class="feat-icon"><i class="ti ti-bug" aria-hidden="true"></i></div>
-          <div class="feat-title">Capture feedback live</div>
-          <div class="feat-desc">Players report bugs and leave structured feedback during the session. You get organized data, not a mess of DMs.</div>
-        </div>
-      </div>
-      <div class="home-cta">
-        <h2>Your next version deserves real players.</h2>
-        <p>Join developers who test before they ship.</p>
-        <button class="btn btn-primary btn-lg" (click)="onCatalogButtonClick()"><i class="ti ti-rocket"></i> Create your first playtest</button>
-      </div>
-    </div>
+
   </div>
-  <footer class="footer"><div class="wrap">© 2026 Open To Test · Built for game developers</div></footer>
+
+  <footer class="footer">
+    <div class="wrap">© 2026 Open To Test · Built for game developers</div>
+  </footer>
+
 </div>
-{{isLogged()}}
