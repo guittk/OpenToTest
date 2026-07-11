@@ -9,10 +9,10 @@
     <div class="flex g3 items-c">
       @if (isLogged()) {
         <span style="font-size:13px;color:var(--mut);font-family:var(--fm)">{{ myUser?.username }}</span>
-        <button class="btn btn-ghost btn-sm" (click)="onLogoutButtonClick()">Logout</button>
+        <button class="btn btn-ghost btn-sm" (click)="onLogoutButtonClick()">Sair</button>
       } @else {
-        <button class="btn btn-ghost btn-sm" (click)="onLoginButtonClick()">Log in</button>
-        <button class="btn btn-primary btn-sm" (click)="onRegisterButtonClick()">Register</button>
+        <button class="btn btn-ghost btn-sm" (click)="onLoginButtonClick()">Entrar</button>
+        <button class="btn btn-primary btn-sm" (click)="onRegisterButtonClick()">Registrar-se</button>
       }
     </div>
   </nav>
@@ -30,16 +30,16 @@
 
       <div class="hero-pill">
         <div class="live-dot"></div>
-        Playtest platform for game developers
+        Plataforma de playtests para desenvolvedores de jogos
       </div>
 
       <h1 class="hero-h">
-        Test early.<br><span>Launch confident.</span>
+        Teste cedo.<br><span>Lance com confiança.</span>
       </h1>
 
       <p class="hero-sub">
-        Schedule live playtests, fill sessions with real players, and collect
-        structured feedback — all in one place.
+        Agende playtests ao vivo, preencha sessões com jogadores reais e colete
+        feedback estruturado — tudo em um só lugar.
       </p>
 
       <div class="hero-btns">
@@ -49,7 +49,7 @@
           </button>
         } @else {
           <button class="btn btn-primary btn-lg" (click)="onLoginButtonClick()">
-            Start playtesting <i class="ti ti-arrow-right"></i>
+            Começar a testar <i class="ti ti-arrow-right"></i>
           </button>
         }
       </div>
@@ -65,7 +65,7 @@
   </div>
 
   <footer class="footer">
-    <div class="wrap">© 2026 Open To Test · Built for game developers</div>
+    <div class="wrap">© 2026 Open To Test · Feito para desenvolvedores de jogos</div>
   </footer>
 
 </div>

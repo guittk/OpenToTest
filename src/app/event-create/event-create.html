@@ -3,75 +3,71 @@
     <a class="logo" (click)="onHomeButtonClick()">
       <div class="logo-signal"></div>Open To Test
     </a>
-    <button class="btn btn-ghost btn-sm" (click)="onBackButtonClick()"><i class="ti ti-arrow-left"></i> Back</button>
+    <button class="btn btn-ghost btn-sm" (click)="onBackButtonClick()"><i class="ti ti-arrow-left"></i> Voltar</button>
   </nav>
   <div class="wrap create-body">
     <div class="create-hd">
-      <h1>New Playtest Session</h1>
-      <p>Fill in the details so players know exactly what to expect.</p>
+      <h1>Nova Sessão de Playtest</h1>
+      <p>Preencha os detalhes para que os jogadores saibam exatamente o que esperar.</p>
     </div>
     <div class="create-card">
       <div class="fsec">
-        <div class="fsec-title">01 · Identity</div>
+        <div class="fsec-title">01 · Identidade</div>
         <div class="form-stack">
           <div class="form-group">
-            <label class="form-label">Session title <span style="color:var(--red)">*</span></label>
-            <input class="form-input" id="c-title" placeholder="e.g. Combat System Alpha Test">
+            <label class="form-label">Título da sessão <span style="color:var(--red)">*</span></label>
+            <input class="form-input" id="c-title" placeholder="Título da sessão">
           </div>
           <div class="form-group">
-            <label class="form-label">Description <span style="color:var(--red)">*</span></label>
-            <textarea class="form-textarea" id="c-desc" placeholder="What are you testing? What should players pay attention to?"></textarea>
+            <label class="form-label">Descrição <span style="color:var(--red)">*</span></label>
+            <textarea class="form-textarea" id="c-desc" placeholder="Descrição"></textarea>
           </div>
         </div>
       </div>
       <div class="fsec">
-        <div class="fsec-title">02 · Schedule</div>
+        <div class="fsec-title">02 · Agendamento</div>
         <div class="form-stack">
           <div class="form-group">
-            <label class="form-label">Date <span style="color:var(--red)">*</span></label>
+            <label class="form-label">Data <span style="color:var(--red)">*</span></label>
             <input class="form-input" type="date" id="c-date">
           </div>
           <div class="form-group">
-            <label class="form-label">Start time <span style="color:var(--red)">*</span></label>
+            <label class="form-label">Horário de início <span style="color:var(--red)">*</span></label>
             <input class="form-input" type="time" id="c-time">
           </div>
           <div class="form-group">
-            <label class="form-label">Open slots <span style="color:var(--red)">*</span></label>
+            <label class="form-label">Vagas disponíveis <span style="color:var(--red)">*</span></label>
             <input class="form-input" type="number" id="c-slots" placeholder="8" min="1" max="100">
           </div>
         </div>
       </div>
       <div class="fsec">
-        <div class="fsec-title">03 · Configuration</div>
+        <div class="fsec-title">03 · Configuração</div>
         <div class="form-stack">
           <div class="form-group">
-            <label class="form-label">Test type <span style="color:var(--red)">*</span></label>
+            <label class="form-label">Tipo de teste <span style="color:var(--red)">*</span></label>
             <select class="form-select" id="c-type">
-              <option value="">Select type…</option>
-              <option value="Combat">Combat</option>
-              <option value="Matchmaking">Matchmaking</option>
-              <option value="Balancing">Balancing</option>
-              <option value="UI/UX">UI/UX</option>
-              <option value="Performance">Performance</option>
-              <option value="Narrative">Narrative</option>
-              <option value="Tutorial">Tutorial</option>
-              <option value="Economy">Economy</option>
+              <option value="">Selecione a categoria</option>
+              @for (category of eventCategories; track category.value)
+              {
+                <option [value]="category.value">{{ category.label }}</option>
+              }
             </select>
           </div>
         </div>
       </div>
-      <div class="auth-err" id="c-err" style="margin-bottom:16px">Please fill in all required fields.</div>
+      <div class="auth-err" id="c-err" style="margin-bottom:16px">Preencha todos os campos obrigatórios.</div>
       <div class="form-actions">
         @if(queryEvent === null)
         {
-          <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Create playtest</button>
+          <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Criar playtest</button>
         }
         @else
         {
-          <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Save edit</button>
+          <button class="btn btn-primary btn-lg" (click)="onCreateEventButtonClick()"><i class="ti ti-rocket"></i> Salvar alterações</button>
         }
 
-        <button class="btn btn-ghost btn-lg" (click)="onBackButtonClick()">Cancel</button>
+        <button class="btn btn-ghost btn-lg" (click)="onBackButtonClick()">Cancelar</button>
       </div>
     </div>
   </div>

@@ -74,10 +74,10 @@ export class EventDetail
     console.log(this.developerEvent._id);
     console.log("--------------------");
 
-    this.router.navigate(
-      ['event/create'],
-      {
-        queryParams: {
+    this.router.navigate(['event/create'],
+    {
+        queryParams:
+        {
           eventId: this.developerEvent._id
         }
       }

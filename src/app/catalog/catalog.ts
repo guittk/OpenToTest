@@ -1,5 +1,6 @@
 import { DeveloperEventService } from '../services/developer-event-service';
 import { DeveloperEvent } from '../models/developer-event.model';
+import { EventCategories } from '../constants/categories';
 import { AuthService } from '../services/auth-service';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -21,6 +22,8 @@ export class Catalog
   myEvents: DeveloperEvent[] = [];
   otherEvents: DeveloperEvent[] = [];
   myJoinedEvents: DeveloperEvent[] = [];
+
+  eventCategories = EventCategories;
 
   constructor(private developerEventService: DeveloperEventService, private authService: AuthService, private router: Router)
   {

@@ -1,49 +1,49 @@
 <div class="page" id="page-auth">
   <div class="auth-box">
     <div class="auth-logo"><div class="auth-logo-dot"></div>Open To Test</div>
-    <div class="auth-sub">Plug in and start testing.</div>
+    <div class="auth-sub">Conecte-se e comece a testar.</div>
     <div class="auth-tabs">
-      <div class="auth-tab" [class.active]="currentTab === 'Login'" id="tab-li" (click)="onLoginButtonClick()">Log in</div>
-      <div class="auth-tab" [class.active]="currentTab === 'Register'" id="tab-reg" (click)="onRegisterButtonClick()">Register</div>
+      <div class="auth-tab" [class.active]="currentTab === 'Login'" id="tab-li" (click)="onLoginButtonClick()">Entrar</div>
+      <div class="auth-tab" [class.active]="currentTab === 'Register'" id="tab-reg" (click)="onRegisterButtonClick()">Registrar-se</div>
     </div>
     @if(currentTab == 'Login')
     {
-      <div id="frm-login" class="form-stack" ngIf="currentTab === 'login'">
-        <div class="auth-err" id="li-err">Incorrect username or password.</div>
+      <div id="frm-login" class="form-stack">
+        <div class="auth-err" id="li-err">Nome de usuário ou senha incorretos.</div>
         <div class="form-group">
-          <label class="form-label">Username</label>
-          <input class="form-input" id="li-usr" placeholder="your username">
+          <label class="form-label">Nome de usuário</label>
+          <input class="form-input" id="li-usr" placeholder="seu nome de usuário">
         </div>
         <div class="form-group">
-          <label class="form-label">Password</label>
+          <label class="form-label">Senha</label>
           <input class="form-input" type="password" id="li-pw" placeholder="••••••••">
         </div>
-        <button class="btn btn-primary btn-full" (click)="onTryDoLogin()"><i class="ti ti-login"></i> Log in</button>
-        <p style="text-align:center;font-size:13px;color:var(--mut)">No account? <span style="color:var(--acc);cursor:pointer" (click)="onRegisterButtonClick()">Register</span></p>
+        <button class="btn btn-primary btn-full" (click)="onTryDoLogin()"><i class="ti ti-login"></i> Entrar</button>
+        <p style="text-align:center;font-size:13px;color:var(--mut)">Não tem uma conta? <span style="color:var(--acc);cursor:pointer" (click)="onRegisterButtonClick()">Registrar-se</span></p>
       </div>
     }
     @else
     {
-      <div id="frm-reg" class="form-stack" ngIf="currentTab === 'register'">
+      <div id="frm-reg" class="form-stack">
         <div class="auth-err" id="reg-err"></div>
         <div class="form-group">
-          <label class="form-label">Username</label>
-          <input class="form-input" id="reg-usr" placeholder="pick a username">
+          <label class="form-label">Nome de usuário</label>
+          <input class="form-input" id="reg-usr" placeholder="escolha um nome de usuário">
         </div>
         <div class="form-group">
-          <label class="form-label">Email</label>
-          <input class="form-input" type="email" id="reg-email" placeholder="you@example.com">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="voce@exemplo.com">
         </div>
         <div class="form-group">
-          <label class="form-label">Password</label>
-          <input class="form-input" type="password" id="reg-pw" placeholder="min 6 characters">
+          <label class="form-label">Senha</label>
+          <input class="form-input" type="password" id="reg-pw" placeholder="mínimo de 6 caracteres">
         </div>
-        <button class="btn btn-primary btn-full" (click)="onTryDoRegister()"><i class="ti ti-user-plus"></i> Create account</button>
-        <p style="text-align:center;font-size:13px;color:var(--mut)">Already registered? <span style="color:var(--acc);cursor:pointer" (click)="onLoginButtonClick()">Log in</span></p>
+        <button class="btn btn-primary btn-full" (click)="onTryDoRegister()"><i class="ti ti-user-plus"></i> Criar conta</button>
+        <p style="text-align:center;font-size:13px;color:var(--mut)">Já possui uma conta? <span style="color:var(--acc);cursor:pointer" (click)="onLoginButtonClick()">Entrar</span></p>
       </div>
     }
 
     <div class="divider"></div>
-    <button class="btn btn-ghost btn-full btn-sm" (click)="onHomeButtonClick()"><i class="ti ti-arrow-left"></i> Back to home</button>
+    <button class="btn btn-ghost btn-full btn-sm" (click)="onHomeButtonClick()"><i class="ti ti-arrow-left"></i> Voltar para a página inicial</button>
   </div>
 </div>

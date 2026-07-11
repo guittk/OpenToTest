@@ -1,5 +1,6 @@
 import { CreateEventRequest, DeveloperEvent } from '../models/developer-event.model';
 import { DeveloperEventService } from '../services/developer-event-service';
+import { EventCategories } from '../constants/categories';
 import { AuthService } from '../services/auth-service';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
 export class EventCreate
 {
   queryEvent: DeveloperEvent | null = null;
+  eventCategories = EventCategories;
 
   constructor(private router: Router, private authService: AuthService, private developerEventService: DeveloperEventService, private activateRoute: ActivatedRoute)
   {
@@ -34,7 +36,6 @@ export class EventCreate
       console.log("Deveria estar recebendo parametros");
       console.log(params);
       console.log(eventId);
-
 
       if(!eventId)
       {
